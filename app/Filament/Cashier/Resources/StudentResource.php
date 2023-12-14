@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -17,7 +18,7 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
     {
@@ -46,22 +47,21 @@ class StudentResource extends Resource
                 ->searchable(),
                 Tables\Columns\TextColumn::make('last_name')
                 ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                ->searchable(),
                 Tables\Columns\TextColumn::make('grade.name')
+                    ->label('Grade Level')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('section.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('grade')
+                ->label('Grade Level')
+                ->relationship('grade', 'name')
+                ->searchable()
+                ->preload(),
             ])
             ->actions([
                 Tables\Actions\Action::make('view_billing')

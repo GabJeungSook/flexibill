@@ -28,6 +28,7 @@ class CashierPanelProvider extends PanelProvider
         return $panel
             ->id('cashier')
             ->brandName('FlexiBill')
+            ->darkMode(false)
             ->path('/')
             ->login()
             ->colors([

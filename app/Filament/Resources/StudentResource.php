@@ -40,6 +40,13 @@ class StudentResource extends Resource
                 Forms\Components\TextInput::make('last_name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('address')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->maxLength(255)
+                    ->helperText('This can be used to receive email notifications.'),
             ]);
     }
 
@@ -55,6 +62,10 @@ class StudentResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('section.name')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
             ])
             ->filters([
                 //

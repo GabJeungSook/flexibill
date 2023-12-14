@@ -3,7 +3,10 @@
 namespace App\Filament\Cashier\Resources\StudentResource\Pages;
 
 use App\Models\Student;
+use App\Mail\StatementMail;
 use Filament\Resources\Pages\Page;
+use Illuminate\Support\Facades\Mail;
+use Filament\Notifications\Notification;
 use App\Filament\Cashier\Resources\StudentResource;
 
 class ViewBillingStatement extends Page
@@ -16,6 +19,18 @@ class ViewBillingStatement extends Page
     public function redirectToPayment()
     {
         return redirect()->route('filament.cashier.resources.students.add', $this->record);
+    }
+
+    public function sendEmailStatement()
+    {
+        Mail::to(['smurfgab66@gmail.com'])->send(new StatementMail($this->record));
+
+        Notification::make()
+        ->title('E-Statement sent successfully')
+        ->body('Email sent to '.$this->record->first_name.' '.$this->record->last_name)
+        ->success()
+        ->send();
+
     }
 
     public function mount($record): void

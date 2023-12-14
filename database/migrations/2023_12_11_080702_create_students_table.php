@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('section_id');
             $table->string('first_name');
             $table->string('last_name');
+            $table->text('address');
+            $table->string('email')->unique()->nullable();
             $table->timestamps();
         });
     }

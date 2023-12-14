@@ -5,7 +5,9 @@
                 <x-filament::button wire:click="addBilling" type="button" icon="heroicon-o-printer" class="btn btn-primary w-32">Print</x-filament::button>
             </div>
             <div class="px-1">
-            <x-filament::button wire:click="addBilling" type="button" icon="heroicon-o-paper-airplane" class="btn btn-success w-42">Send E-Statement</x-filament::button>
+            @if ($record->email != null)
+                <x-filament::button wire:click="addEmail" type="button" icon="heroicon-o-paper-airplane" class="btn btn-success w-42">Send E-Statement</x-filament::button>
+            @endif
             </div>
         </div>
         <div>
@@ -22,14 +24,14 @@
             <p class="font-bold text-2xl">STATEMENT OF ACCOUNT</p>
             <div class="flex justify-between" style="margin-top: 30px;">
                 <div>
-                    <p class="font-semibold text-md">Student Number : 000101012</p>
-                    <p class="font-semibold text-md">Full Name : {{$record->first_name.' '.$record->last_name}}</p>
-                    <p class="font-semibold text-md">Address : </p>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Student ID : 00000{{$record->id}}</p>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Full Name : {{$record->first_name.' '.$record->last_name}}</p>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Address : {{$record->address}}</p>
                 </div>
                 <div>
-                    <p class="font-semibold text-md">Grade Level : {{$record->grade->name}}</p>
-                    <p class="font-semibold text-md">Section : {{$record->section->name}}</p>
-                    <p class="font-semibold text-md">Cashier : {{ucfirst(auth()->user()->name)}}</p>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Grade Level : {{$record->grade->name}}</p>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Section : {{$record->section->name}}</p>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Cashier : {{ucfirst(auth()->user()->name)}}</p>
                 </div>
             </div>
 
