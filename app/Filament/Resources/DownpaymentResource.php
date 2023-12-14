@@ -43,6 +43,8 @@ class DownpaymentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('down_payment')
                     ->label('Amount')
+                    ->badge()
+                    ->color('success')
                     ->formatStateUsing(fn ($record) => '₱ '. number_format($record->down_payment, 2)),
 
             ])

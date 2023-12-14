@@ -65,12 +65,18 @@ class FeeResource extends Resource
                     ->label('Grade Level'),
                 Tables\Columns\TextColumn::make('tuition')
                     ->label('Tuition Fee')
+                    ->badge()
+                    ->color('success')
                     ->formatStateUsing(fn ($record) => '₱ '. number_format($record->tuition, 2)),
                 Tables\Columns\TextColumn::make('misc')
                     ->label('Miscellaneous Fee')
+                    ->badge()
+                    ->color('success')
                     ->formatStateUsing(fn ($record) => '₱ '.number_format($record->misc, 2)),
                 Tables\Columns\TextColumn::make('books')
                     ->label('Books')
+                    ->badge()
+                    ->color('success')
                     ->formatStateUsing(fn ($record) => '₱ '.number_format($record->books, 2)),
             ])
             ->filters([
