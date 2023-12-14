@@ -23,7 +23,7 @@ class ViewBillingStatement extends Page
 
     public function sendEmailStatement()
     {
-        Mail::to(['smurfgab66@gmail.com'])->send(new StatementMail($this->record));
+        Mail::to('smurfgab66@gmail.com')->send(new StatementMail($this->record));
 
         Notification::make()
         ->title('E-Statement sent successfully')

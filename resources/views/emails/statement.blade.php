@@ -64,6 +64,17 @@
         <td class="border border-gray-500 px-4 py-2"></td>
     </tr>
     @endforeach
+    @if ($record->transactions()->count() > 0)
+    @foreach ($record->transactions as $transaction)
+    <tr>
+        <td class="border border-gray-500 px-4 py-2">{{Carbon\Carbon::parse($transaction->created_at)->format('m/d/Y')}}</td>
+        <td class="border border-gray-500 px-4 py-2">{{strtoupper($transaction->payment_type)}}</td>
+        <td class="border border-gray-500 px-4 py-2">{{$transaction->invoice->invoice_number}}</td>
+        <td class="border border-gray-500 px-4 py-2 text-center"></td>
+        <td class="border border-gray-500 px-4 py-2">₱ {{number_format($transaction->amount_paid, 2)}}</td>
+    </tr>
+    @endforeach
+    @endif
   </tbody>
 </table>
 <div style="margin-top: 50px">

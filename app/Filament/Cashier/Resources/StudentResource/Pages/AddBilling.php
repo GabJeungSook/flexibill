@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use App\Models\Downpayment;
 use Filament\Support\RawJs;
 use Filament\Resources\Pages\Page;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 use App\Filament\Cashier\Resources\StudentResource;
+use App\Filament\Cashier\Resources\TransactionResource;
 
 class AddBilling extends Page
 {
@@ -35,7 +37,7 @@ class AddBilling extends Page
     {
         $this->record = Student::find($record);
         $this->total = ($this->record->grade->fees->first()->tuition + $this->record->grade->fees->first()->misc + $this->record->grade->fees->first()->books);
-        $this->balance = $this->record->billings->first() != null ? $this->record->billings->first()->balance : ($this->record->grade->fees->first()->tuition + $this->record->grade->fees->first()->misc + $this->record->grade->fees->first()->books);
+        $this->balance = $this->record->transactions()->latest()->first() != null ? $this->record->transactions()->latest()->first()->balance : $this->total;
         $this->down_payment = Downpayment::first()->down_payment;
         $this->form->fill([
             'first_name' => $this->record->first_name,
@@ -44,8 +46,8 @@ class AddBilling extends Page
             'section' => $this->record->section->name,
             'address' => $this->record->address,
             'email' => $this->record->email,
-            'payment_type' => $this->record->billings()->exists() ? 'cash' : 'down_payment',
-            'payment' => $this->record->billings()->exists() ? null : $this->down_payment,
+            'payment_type' => $this->record->transactions()->exists() ? 'cash' : 'down payment',
+            'payment' => $this->record->transactions()->exists() ? null : $this->down_payment,
         ]);
         static::authorizeResourceAccess();
     }
@@ -98,7 +100,7 @@ class AddBilling extends Page
                     ->required()
                     ->options([
                         'cash' => 'Cash',
-                        'down_payment' => 'Down Payment',
+                        'down payment' => 'Down Payment',
                     ])
                     ->disabled(),
                     TextInput::make('payment')
@@ -130,18 +132,28 @@ class AddBilling extends Page
     public function addBilling()
     {
         $total = (float) str_replace(',', '', $this->total);
+        $balance = (float) str_replace(',', '', $this->balance);
         $payment = (float) str_replace(',', '', $this->data['payment']);
         $this->validate();
-        $this->record->billings()->create([
-            'paid' => $payment,
-            'balance' => ($total - $payment),
+
+        DB::beginTransaction();
+        $this->record->transactions()->create([
+            'payment_type' => $this->data['payment_type'],
             'total' => $total,
+            'balance' => ($balance - $payment),
+            'amount_paid' => $payment,
         ]);
+
+
+        $this->record->transactions()->latest()->first()->invoice()->create([
+            'invoice_number' => 'INV-'.date('Y').'-'.date('m').'-'.date('d').'-'.date('H').'-'.date('i').'-'.date('s').'-'.rand(1000, 9999),
+        ]);
+        DB::commit();
         Notification::make()
         ->title('Success')
         ->success()
         ->body('Billing has been added successfully.')
         ->send();
-        $this->redirect(StudentResource::getUrl('index'));
+        $this->redirect(TransactionResource::getUrl('view_invoice', [$this->record->transactions()->latest()->first()->id]));
     }
 }

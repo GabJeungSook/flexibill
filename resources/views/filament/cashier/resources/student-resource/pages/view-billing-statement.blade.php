@@ -2,11 +2,11 @@
     <div class="flex justify-between">
         <div  class="flex">
             <div class="px-1">
-                <x-filament::button wire:click="addBilling" type="button" icon="heroicon-o-printer" class="btn btn-primary w-32">Print</x-filament::button>
+                <x-filament::button  type="button" icon="heroicon-o-printer" class="btn btn-primary w-32">Print</x-filament::button>
             </div>
             <div class="px-1">
             @if ($record->email != null)
-                <x-filament::button wire:click="addEmail" type="button" icon="heroicon-o-paper-airplane" class="btn btn-success w-42">Send E-Statement</x-filament::button>
+                <x-filament::button wire:click="sendEmailStatement" type="button" icon="heroicon-o-paper-airplane" class="btn btn-success w-42">Send E-Statement</x-filament::button>
             @endif
             </div>
         </div>
@@ -73,9 +73,75 @@
                         <td class="border border-gray-500 px-4 py-2"></td>
                     </tr>
                     @endforeach
-                    <!-- Add more rows for additional items -->
+                    @if ($record->transactions()->count() > 0)
+                    @foreach ($record->transactions as $transaction)
+                    <tr>
+                        <td class="border border-gray-500 px-4 py-2">{{Carbon\Carbon::parse($transaction->created_at)->format('m/d/Y')}}</td>
+                        <td class="border border-gray-500 px-4 py-2">{{strtoupper($transaction->payment_type)}}</td>
+                        <td class="border border-gray-500 px-4 py-2">{{$transaction->invoice->invoice_number}}</td>
+                        <td class="border border-gray-500 px-4 py-2 text-center"></td>
+                        <td class="border border-gray-500 px-4 py-2">₱ {{number_format($transaction->amount_paid, 2)}}</td>
+                    </tr>
+                    @endforeach
+                    <tr>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=""></td>
+                    </tr>
+                    <tr>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=" px-4 py-2 font-bold">Total : </td>
+                        <td class=" px-4 py-2 text-center font-bold">₱ {{number_format($transaction->total, 2)}}</td>
+                        <td class=" px-4 py-2 font-bold">₱ {{number_format($record->transactions->sum('amount_paid'), 2)}}</td>
+                    </tr>
+                    <tr>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class="border-t border-gray-500 px-4 py-2 font-bold">Balance : </td>
+                        <td class="border-t border-gray-500 px-4 py-2 text-center"></td>
+                        <td class="border-t border-gray-500 px-4 py-2 font-bold">₱ {{number_format($record->transactions()->latest()->first()->balance, 2)}}</td>
+                    </tr>
+                    @else
+                    <tr>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=""></td>
+                    </tr>
+                    <tr>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class=" px-4 py-2 font-bold">Total : </td>
+                        @php
+                            $total = $record->grade->fees()->first()->tuition + $record->grade->fees()->first()->misc + $record->grade->fees()->first()->books;
+                        @endphp
+                        <td class=" px-4 py-2 text-center font-bold">₱ {{number_format($total, 2)}}</td>
+                        <td class=" px-4 py-2 font-bold">₱ 0.00</td>
+                    </tr>
+                    <tr>
+                        <td class=""></td>
+                        <td class=""></td>
+                        <td class="border-t border-gray-500 px-4 py-2 font-bold">Balance : </td>
+                        <td class="border-t border-gray-500 px-4 py-2 text-center"></td>
+                        <td class="border-t border-gray-500 px-4 py-2 font-bold">₱ {{number_format($total, 2)}}</td>
+                    </tr>
+
+                    @endif
+
                 </tbody>
             </table>
+            <div class="flex justify-between" style="margin-top: 35px;">
+                <div>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Cashier : {{strtoupper(auth()->user()->name)}}</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-md" style="margin-top: 5px;">Received By : {{strtoupper($record->first_name.' '.$record->last_name)}}</p>
+                </div>
+            </div>
         </div>
     </div>
 </x-filament-panels::page>
