@@ -19,4 +19,9 @@ class Student extends Model
     {
         return $this->belongsTo(Grade::class);
     }
+
+    public function billings()
+    {
+        return $this->hasMany(Billing::class);
+    }
 }

@@ -21,14 +21,18 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class CashierPanelProvider extends PanelProvider
 {
+    protected static ?string $title = 'Cashier Dashboard';
+
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->id('cashier')
+            ->brandName('FlexiBill')
             ->path('/')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo,
+                'gray' => Color::Blue
             ])
             ->discoverResources(in: app_path('Filament/Cashier/Resources'), for: 'App\\Filament\\Cashier\\Resources')
             ->discoverPages(in: app_path('Filament/Cashier/Pages'), for: 'App\\Filament\\Cashier\\Pages')
@@ -38,7 +42,7 @@ class CashierPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Cashier/Widgets'), for: 'App\\Filament\\Cashier\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                //Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
