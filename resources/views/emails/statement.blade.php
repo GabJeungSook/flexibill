@@ -74,6 +74,53 @@
         <td class="border border-gray-500 px-4 py-2">₱ {{number_format($transaction->amount_paid, 2)}}</td>
     </tr>
     @endforeach
+    <tr>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""></td>
+    </tr>
+    <tr>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=" px-4 py-2 font-bold">Total : </td>
+        <td class=" px-4 py-2 text-center font-bold">₱ {{number_format($transaction->total, 2)}}</td>
+        <td class=" px-4 py-2 font-bold">₱ {{number_format($record->transactions->sum('amount_paid'), 2)}}</td>
+    </tr>
+    <tr>
+        <td class=""></td>
+        <td class=""></td>
+        <td class="border-t border-gray-500 px-4 py-2 font-bold">Balance : </td>
+        <td class="border-t border-gray-500 px-4 py-2 text-center"></td>
+        <td class="border-t border-gray-500 px-4 py-2 font-bold">₱ {{number_format($record->transactions()->latest()->first()->balance, 2)}}</td>
+    </tr>
+    @else
+    <tr>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""></td>
+    </tr>
+    <tr>
+        <td class=""></td>
+        <td class=""></td>
+        <td class=" px-4 py-2 font-bold">Total : </td>
+        @php
+            $total = $record->grade->fees()->first()->tuition + $record->grade->fees()->first()->misc + $record->grade->fees()->first()->books;
+        @endphp
+        <td class=" px-4 py-2 text-center font-bold">₱ {{number_format($total, 2)}}</td>
+        <td class=" px-4 py-2 font-bold">₱ 0.00</td>
+    </tr>
+    <tr>
+        <td class=""></td>
+        <td class=""></td>
+        <td class="border-t border-gray-500 px-4 py-2 font-bold">Balance : </td>
+        <td class="border-t border-gray-500 px-4 py-2 text-center"></td>
+        <td class="border-t border-gray-500 px-4 py-2 font-bold">₱ {{number_format($total, 2)}}</td>
+    </tr>
+
     @endif
   </tbody>
 </table>

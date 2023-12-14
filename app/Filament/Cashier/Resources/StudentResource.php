@@ -2,17 +2,22 @@
 
 namespace App\Filament\Cashier\Resources;
 
-use App\Filament\Cashier\Resources\StudentResource\Pages;
-use App\Filament\Cashier\Resources\StudentResource\RelationManagers;
-use App\Models\Student;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Student;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Mail\StatementMail;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Mail;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Cashier\Resources\StudentResource\Pages;
+use App\Filament\Cashier\Resources\StudentResource\RelationManagers;
 
 class StudentResource extends Resource
 {
@@ -71,9 +76,25 @@ class StudentResource extends Resource
                 ->url(fn ($record): string => StudentResource::getUrl('view_statement', [$record])),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                BulkAction::make('send_statement')
+                ->label('Send E-Statement')
+                ->icon('heroicon-o-paper-airplane')
+                ->requiresConfirmation()
+                ->action(function (Collection $records) {
+                    foreach ($records as $record) {
+                        if ($record->email)
+                        {
+                            Mail::to($record->email)->send(new StatementMail($record));
+                        }
+                    }
+                    Notification::make()
+                    ->title('E-Statements sent successfully')
+                    ->success()
+                    ->send();
+                })
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

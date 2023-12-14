@@ -4,11 +4,13 @@ namespace App\Filament\Cashier\Resources\StudentResource\Pages;
 
 use App\Models\Student;
 use Filament\Forms\Form;
+use App\Mail\InvoiceMail;
 use App\Models\Downpayment;
 use Filament\Support\RawJs;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Mail;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -129,6 +131,7 @@ class AddBilling extends Page
         return redirect()->route('filament.cashier.resources.students.view_statement', $this->record);
     }
 
+
     public function addBilling()
     {
         $total = (float) str_replace(',', '', $this->total);
@@ -154,6 +157,14 @@ class AddBilling extends Page
         ->success()
         ->body('Billing has been added successfully.')
         ->send();
+
+        Mail::to($this->record->email)->send(new InvoiceMail($this->record->transactions()->latest()->first()));
+        Notification::make()
+        ->title('Success')
+        ->success()
+        ->body('E-Invoice is sent to students email.')
+        ->send();
+
         $this->redirect(TransactionResource::getUrl('view_invoice', [$this->record->transactions()->latest()->first()->id]));
     }
 }
