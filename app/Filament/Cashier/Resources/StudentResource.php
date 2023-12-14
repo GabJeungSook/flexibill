@@ -64,11 +64,11 @@ class StudentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('create_billing')
-                ->label('Payment')
-                ->icon('heroicon-o-banknotes')
+                Tables\Actions\Action::make('view_billing')
+                ->label('View Statement')
+                ->icon('heroicon-o-eye')
                 ->button()
-                ->url(fn ($record): string => StudentResource::getUrl('add', [$record])),
+                ->url(fn ($record): string => StudentResource::getUrl('view_statement', [$record])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -91,6 +91,7 @@ class StudentResource extends Resource
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
             'add' => Pages\AddBilling::route('/bill/{record}'),
+            'view_statement' => Pages\ViewBillingStatement::route('/statement/{record}'),
         ];
     }
 }
