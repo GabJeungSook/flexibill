@@ -158,12 +158,16 @@ class AddBilling extends Page
         ->body('Billing has been added successfully.')
         ->send();
 
-        Mail::to($this->record->email)->send(new InvoiceMail($this->record->transactions()->latest()->first()));
-        Notification::make()
-        ->title('Success')
-        ->success()
-        ->body('E-Invoice is sent to students email.')
-        ->send();
+        if($this->record->email != null)
+        {
+            Mail::to($this->record->email)->send(new InvoiceMail($this->record->transactions()->latest()->first()));
+            Notification::make()
+            ->title('Success')
+            ->success()
+            ->body('E-Invoice is sent to students email.')
+            ->send();
+        }
+
 
         $this->redirect(TransactionResource::getUrl('view_invoice', [$this->record->transactions()->latest()->first()->id]));
     }
