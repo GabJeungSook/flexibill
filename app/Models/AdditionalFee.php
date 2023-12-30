@@ -5,18 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Fee extends Model
+class AdditionalFee extends Model
 {
     use HasFactory;
     protected $guarded = [];
 
-    public function grade()
+    public function fee()
     {
         return $this->belongsTo(Grade::class);
-    }
-
-    public function additional_fees()
-    {
-        return $this->hasMany(AdditionalFee::class);
     }
 }

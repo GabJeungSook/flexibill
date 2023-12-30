@@ -95,7 +95,7 @@ class FeeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\AdditionalFeesRelationManager::class,
         ];
     }
 
