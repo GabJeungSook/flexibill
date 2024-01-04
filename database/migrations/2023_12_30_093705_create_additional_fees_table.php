@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('additional_fees', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('fee_id')->unique();
+            $table->foreignId('fee_id');
             $table->string('description')->nullable();
             $table->decimal('amount', 10, 2)->nullable();
             $table->timestamps();
