@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 
 class TransactionResource extends Resource
 {
@@ -69,8 +72,23 @@ class TransactionResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
-            ])
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('created_from')->label('From')->native(false)->default(today()),
+                    DatePicker::make('created_until')->label('To')->native(false)->default(today()),
+                ])->columns(2)->columnSpan(2)
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\Action::make('view_invoice')
                 ->label('View Invoice')

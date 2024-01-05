@@ -5,6 +5,8 @@ namespace App\Filament\Cashier\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Student;
+use App\Models\Grade;
+use App\Models\Section;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Mail\StatementMail;
@@ -13,6 +15,10 @@ use Illuminate\Support\Facades\Mail;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Get;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -62,12 +68,30 @@ class StudentResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('grade')
-                ->label('Grade Level')
-                ->relationship('grade', 'name')
-                ->searchable()
-                ->preload(),
-            ])
+                Filter::make('grade_and_section')
+                ->form([
+                    Select::make('grade')
+                        ->options(Grade::pluck('name', 'id'))
+                        ->label('Grade Level')
+                        ->multiple()
+                        ->live(),
+                    Select::make('section')
+                        ->options(fn ($get) => Section::whereIn('grade_id', $get('grade'))->pluck('name', 'id'))
+                        ->label('Section')
+                        ->multiple()
+                        ->live(),
+                ])->columns(2)->columnSpan(2)
+                 ->query(function (Builder $query, array $data): Builder {
+                    // return $query;
+                    return $query
+                    ->when(isset($data['grade']) && count($data['grade']) > 0, function (Builder $query) use ($data) {
+                        return $query->whereIn('grade_id', $data['grade']);
+                    })
+                    ->when(isset($data['section']) && count($data['section']) > 0, function (Builder $query) use ($data) {
+                        return $query->whereIn('section_id', $data['section']);
+                    });
+                    }),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\Action::make('view_billing')
                 ->label('View Statement')
@@ -92,9 +116,6 @@ class StudentResource extends Resource
                     ->success()
                     ->send();
                 })
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
             ]);
     }
 

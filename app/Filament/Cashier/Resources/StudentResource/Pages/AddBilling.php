@@ -30,6 +30,7 @@ class AddBilling extends Page
     protected static string $resource = StudentResource::class;
     public $record;
     public $total;
+    public $total_additional;
     public $balance;
     public $down_payment;
     public ?array $data = [];
@@ -38,7 +39,15 @@ class AddBilling extends Page
     public function mount($record): void
     {
         $this->record = Student::find($record);
-        $this->total = ($this->record->grade->fees->first()->tuition + $this->record->grade->fees->first()->misc + $this->record->grade->fees->first()->books);
+        if($this->record->grade->fees->first()->additional_fees()->exists())
+        {
+            $this->record->grade->fees->first()->additional_fees()->get()->each(function($item){
+                $this->total_additional += $item->amount;
+            });
+            $this->total = ($this->record->grade->fees->first()->tuition + $this->record->grade->fees->first()->misc + $this->record->grade->fees->first()->books + $this->total_additional);
+        }else{
+            $this->total = ($this->record->grade->fees->first()->tuition + $this->record->grade->fees->first()->misc + $this->record->grade->fees->first()->books);
+        }
         $this->balance = $this->record->transactions()->latest()->first() != null ? $this->record->transactions()->latest()->first()->balance : $this->total;
         $this->down_payment = Downpayment::first()->down_payment;
         $this->form->fill([
@@ -86,6 +95,13 @@ class AddBilling extends Page
                     Placeholder::make('books_fee')
                     ->content(new HtmlString('<h1 class="font-bold" style="text-align: right;">₱ '.number_format($this->record->grade->fees->first()->books, 2).'</h1>'))
                     ->label(' '),
+                    //additional fee start
+                    Placeholder::make('books')
+                    ->label('Additional Fee/s: '),
+                    Placeholder::make('additional_fee')
+                    ->content(new HtmlString('<h1 class="font-bold" style="text-align: right;">₱ '.number_format($this->record->grade->fees->first()->additional_fees()->sum('amount'), 2).'</h1>'))
+                    ->label(' '),
+                    //additional fee end
                     Placeholder::make('total')
                     ->content(new HtmlString('<div class="font-bold" style="text-align: right; margin-top: 20px;"></div>'))
                     ->label('Total: '),

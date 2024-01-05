@@ -63,6 +63,18 @@
         <td class="border border-gray-500 px-4 py-2 text-center">₱ {{number_format($fee->books, 2)}}</td>
         <td class="border border-gray-500 px-4 py-2"></td>
     </tr>
+    @if ($fee->additional_fees()->count() > 0)
+    @foreach ($fee->additional_fees()->get() as $additional_fee)
+
+    <tr>
+        <td class="border border-gray-500 px-4 py-2">{{Carbon\Carbon::parse($additional_fee->created_at)->format('m/d/Y')}}</td>
+        <td class="border border-gray-500 px-4 py-2"><span class="font-semibold">Additional Fee</span> - {{$additional_fee->description}}</td>
+        <td class="border border-gray-500 px-4 py-2"></td>
+        <td class="border border-gray-500 px-4 py-2 text-center">₱ {{number_format($additional_fee->amount, 2)}}</td>
+        <td class="border border-gray-500 px-4 py-2"></td>
+    </tr>
+    @endforeach
+    @endif
     @endforeach
     @if ($record->transactions()->count() > 0)
     @foreach ($record->transactions as $transaction)
@@ -108,7 +120,17 @@
         <td class=""></td>
         <td class=" px-4 py-2 font-bold">Total : </td>
         @php
+        if($record->grade->fees()->first()->additional_fees()->count() > 0)
+        {
+            $total_additional = 0;
+            foreach ($record->grade->fees()->first()->additional_fees()->get() as $key => $additional_fee) {
+                $total_additional += $additional_fee->amount;
+            }
+            $total = $record->grade->fees()->first()->tuition + $record->grade->fees()->first()->misc + $record->grade->fees()->first()->books + $total_additional;
+        }else{
             $total = $record->grade->fees()->first()->tuition + $record->grade->fees()->first()->misc + $record->grade->fees()->first()->books;
+
+        }
         @endphp
         <td class=" px-4 py-2 text-center font-bold">₱ {{number_format($total, 2)}}</td>
         <td class=" px-4 py-2 font-bold">₱ 0.00</td>
