@@ -18,7 +18,7 @@ class TransactionReportResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static ?string $navigationGroup = 'Reports';
-    protected static ?string $navigationLabel  = 'Transactions';
+    protected static ?string $navigationLabel  = 'Sales Report';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document';
 

@@ -69,11 +69,11 @@ class CashierPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Sales Repoort')
-                    ->url(fn (): string => TransactionResource::getUrl('sales_report'))
-                    ->icon('heroicon-o-presentation-chart-line')
-                    ->group('Reports')
-                    ->sort(3),
+                // NavigationItem::make('Sales Repoort')
+                //     ->url(fn (): string => TransactionResource::getUrl('sales_report'))
+                //     ->icon('heroicon-o-presentation-chart-line')
+                //     ->group('Reports')
+                //     ->sort(3),
                 // ...
             ]);;
     }

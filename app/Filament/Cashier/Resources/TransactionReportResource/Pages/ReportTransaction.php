@@ -11,7 +11,7 @@ class ReportTransaction extends Page
     protected static string $resource = TransactionReportResource::class;
 
     protected static string $view = 'filament.cashier.resources.transaction-report-resource.pages.report-transaction';
-    protected static ?string $title = 'Transactions';
+    protected static ?string $title = 'Sales Report';
     public $record;
     public function mount(): void
     {
