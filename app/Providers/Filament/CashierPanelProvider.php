@@ -8,6 +8,7 @@ use Filament\Widgets;
 use Filament\PanelProvider;
 use App\Http\Middleware\CheckRole;
 use Filament\Support\Colors\Color;
+use Filament\Navigation\NavigationItem;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -16,6 +17,7 @@ use App\Filament\Cashier\Widgets\CashierSalesChart;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Cashier\Resources\TransactionResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -65,6 +67,14 @@ class CashierPanelProvider extends PanelProvider
             ->authMiddleware([
                 // CheckRole::class,
                 Authenticate::class,
-            ]);
+            ])
+            ->navigationItems([
+                NavigationItem::make('Sales Repoort')
+                    ->url(fn (): string => TransactionResource::getUrl('sales_report'))
+                    ->icon('heroicon-o-presentation-chart-line')
+                    ->group('Reports')
+                    ->sort(3),
+                // ...
+            ]);;
     }
 }
