@@ -8,6 +8,8 @@ use Filament\Widgets;
 use Filament\PanelProvider;
 use App\Http\Middleware\CheckRole;
 use Filament\Support\Colors\Color;
+use App\Filament\Widgets\SalesChart;
+use App\Filament\Widgets\StudentOverview;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -41,9 +43,11 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                StudentOverview::class,
+                SalesChart::class,
+               // Widgets\AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
