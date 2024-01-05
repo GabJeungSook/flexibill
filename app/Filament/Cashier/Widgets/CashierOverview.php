@@ -18,11 +18,11 @@ class CashierOverview extends BaseWidget
             ->descriptionIcon('heroicon-m-users')
             ->color('primary'),
         Stat::make('Transactions Today', Transaction::whereDate('created_at', Carbon::today())->count())
-            ->description('Number of all transactions')
+            ->description('Number of transactions today')
             ->descriptionIcon('heroicon-m-arrows-right-left')
             ->color('warning'),
         Stat::make('Sales Today', '₱ '.number_format(Transaction::whereDate('created_at', Carbon::today())->sum('amount_paid'), 2))
-            ->description('Total sales')
+            ->description('Total sales today')
             ->descriptionIcon('heroicon-m-currency-dollar')
             ->color('success'),
         ];
