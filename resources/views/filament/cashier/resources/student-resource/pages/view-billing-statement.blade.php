@@ -2,7 +2,7 @@
     <div class="flex justify-between">
         <div  class="flex">
             <div class="px-1">
-                <x-filament::button  type="button" icon="heroicon-o-printer" class="btn btn-primary w-32">Print</x-filament::button>
+                <x-filament::button  type="button" icon="heroicon-o-printer" class="btn btn-primary w-32"  onclick="printDiv('printarea')">Print</x-filament::button>
             </div>
             <div class="px-1">
             @if ($record->email != null)
@@ -18,7 +18,7 @@
     </div>
 
 
-    <div class="container mx-auto mt-8">
+    <div id="printarea" class="container mx-auto mt-8">
         <div class="border border-black p-6 text-warning rounded-md">
             <!-- Content inside the box -->
             <p class="font-bold text-2xl">STATEMENT OF ACCOUNT</p>
@@ -166,4 +166,14 @@
             </div>
         </div>
     </div>
+    <script>
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+
+        }
+    </script>
 </x-filament-panels::page>
