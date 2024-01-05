@@ -25,6 +25,13 @@
   </style>
 </head>
 <body>
+    <div>
+        <h1>Good Day Mr./Mrs: {{$record->last_name}},</h1>
+        <p>This is to inform you that your child <span style="font-weight: bold">{{$record->first_name}} {{$record->last_name}}</span> has a balance of <span style="font-weight: bold; text-decoration: underline;">₱ {{number_format($record->transactions()->latest()->first()->balance, 2)}}</span>. Please settle the balance on or before the due date.</p>
+        <p>Here is a copy of your statement of account.</p>
+        <p>Thank You.</p>
+    </div>
+
 <div>
     <p id="statement_title">STATEMENT OF ACCOUNT</p>
 </div>

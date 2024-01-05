@@ -25,6 +25,18 @@
   </style>
 </head>
 <body>
+    <div>
+        <h1>Good Day Mr./Mrs: {{$record->student->last_name}},</h1>
+        <p>Your payment amounting of <span style="font-weight: bold; text-decoration: underline">₱ {{number_format($record->amount_paid, 2)}}</span>
+           has been confirmed.</p>
+        <p>Date: <span style="font-weight: bold;">{{Carbon\Carbon::parse($record->created_at)->format('F d, Y')}}</span></p>
+        <p>Time: <span style="font-weight: bold;">{{Carbon\Carbon::parse($record->created_at)->format('h:i A')}}</span></p>
+        <p>Payment Type: <span style="font-weight: bold;">{{strtoupper($record->payment_type)}}</span></p>
+        <p>Invoice Number: <span style="font-weight: bold;">{{$record->invoice->invoice_number}}</span></p>
+        <p>Here is a copy of your invoice.</p>
+        <p>Thank You.</p>
+    </div>
+
 <div>
     <p id="statement_title">INVOICE</p>
 </div>
