@@ -18,22 +18,19 @@ class SalesChart extends ChartWidget
 
     protected function getData(): array
     {
-        $monthlySum = Transaction::selectRaw('MONTH(created_at) as month, SUM(amount_paid) as total_amount')
-        ->groupBy(DB::raw('MONTH(created_at)'))
-        ->get();
             $data = Trend::model(Transaction::class)
             ->between(
                 start: now()->startOfYear(),
                 end: now()->endOfYear(),
             )
             ->perMonth()
-            ->count();
+            ->sum('amount_paid');
 
         return [
             'datasets' => [
                 [
                     'label' => 'Sales Per Month',
-                    'data' => $monthlySum->map(fn ($item) => $item->total_amount),
+                    'data' => $data->map(fn ($item) => $item->aggregate),
                 ],
             ],
             'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('M')),

@@ -30,6 +30,7 @@ class CashierSalesChart extends ChartWidget
                     [
                         'label' => 'Sales Per Day',
                         'data' => $data->map(fn ($item) => $item->aggregate),
+                        'backgroundColor' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->isToday() ? '#FF6384' : '#36A2EB'),
                     ],
                 ],
                 'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('M d')),
@@ -38,6 +39,6 @@ class CashierSalesChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 }
