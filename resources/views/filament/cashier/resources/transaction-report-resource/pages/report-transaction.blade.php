@@ -1,15 +1,19 @@
 <x-filament-panels::page>
     <div>
-    @if($record->count() > 0)
+   
     <div class="flex justify-between">
         <div  class="flex">
             <div class="px-1">
                 <x-filament::button  type="button" icon="heroicon-o-printer" class="btn btn-primary w-32" onclick="printDiv('printarea')">Print</x-filament::button>
+               
             </div>
+        </div>
+        <div class="mt-20">
+            {{$this->form}}
         </div>
     </div>
 
-
+    @if($record->count() > 0)
             <!-- Transcation Table -->
             <div id="printarea">
                 <table class="w-full" style="margin-top: 30px;">
@@ -32,14 +36,18 @@
                             <td class="border border-gray-500 px-4 py-2">{{Carbon\Carbon::parse($item->created_at)->format('M d, Y')}}</td>
                             <td class="border border-gray-500 px-4 py-2">{{ucfirst($item->student->first_name.' '.$item->student->last_name)}}</td>
                             <td class="border border-gray-500 px-4 py-2">{{ucfirst($item->payment_type)}}</td>
-                            <td class="border border-gray-500 px-4 py-2 text-center">{{number_format($item->total, 2)}}</td>
-                            <td class="border border-gray-500 px-4 py-2 text-center">{{number_format($item->balance, 2)}}</td>
-                            <td class="border border-gray-500 px-4 py-2 text-center">{{number_format($item->amount_paid, 2)}}</td>
+                            <td class="border border-gray-500 px-4 py-2 text-center">₱ {{number_format($item->total, 2)}}</td>
+                            <td class="border border-gray-500 px-4 py-2 text-center">₱ {{number_format($item->balance, 2)}}</td>
+                            <td class="border border-gray-500 px-4 py-2 text-center">₱ {{number_format($item->amount_paid, 2)}}</td>
                         </tr>
                         @endforeach
                     </tbody>
 
                 </table>
+
+                <div class="flex justify-end font-semibold underline text-lg" style="margin-right: 4.5rem; margin-top: 2rem;">
+                    <p>Total: ₱ {{number_format($record->sum('amount_paid', 2))}}</p>
+                </div>
 
                 <div class="flex justify-between" style="margin-top: 35px;">
                     <div>
