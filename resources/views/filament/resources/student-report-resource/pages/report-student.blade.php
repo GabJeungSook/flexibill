@@ -7,6 +7,9 @@
                 <x-filament::button  type="button" icon="heroicon-o-printer" class="btn btn-primary w-32" onclick="printDiv('printarea')">Print</x-filament::button>
             </div>
         </div>
+        <div class="mt-20">
+            {{$this->form}}
+        </div>
     </div>
 
 
